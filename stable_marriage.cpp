@@ -56,10 +56,9 @@ void solve()
             }
         }
     }
-    cout << "Stable Matching is : " << endl;
     for(int i = 0; i < n; i++) 
     {
-        cout << "Men : " << i << ", Women : " << partner[i] << endl;
+        cout << i << " " << partner[i] << endl;  //i followed by partner of i
     }
     return;
 }
