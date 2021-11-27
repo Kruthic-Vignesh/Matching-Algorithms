@@ -21,7 +21,7 @@ void solve()
         for(int j = 0; j < n; j++) 
         {
             cin >> women[i][j];       //jth preference of ith woman 
-            posm[i][women[i][j]] = j; //posw[i][j] : preference of jth woman in ith man's list
+            posm[i][women[i][j]] = j; //posm[i][j] : preference of jth man in ith woman's list
         }
     }
     vector<bool> rejected(n, true), engaged(n, false);  //rejected[i] == true if the ith woman does not have any tentative engagement
