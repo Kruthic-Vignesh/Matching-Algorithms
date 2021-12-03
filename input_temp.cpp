@@ -4,14 +4,25 @@ using namespace std;
 typedef long long ll;
 
 const ll N = 1000;
+#define LL_MAX 1<<60
 
-vector<vector<ll>> stu_pref(N+1), hos_pref(N+1);
-vector<vector<ll>> pos_stu(N+1);
-vector<vector<ll>> final_list(N+1);
+class StudentHospital
+{
+    ll n_stu, n_hos;
+    vector<vector<ll>> stu_pref(N+1), hos_pref(N+1);
+    vector<vector<ll>> pos_stu(N+1,vector<ll>(N+1,LL_MAX));
+    vector<vector<ll>> final_list(N+1);
+    priority_queue<pair<ll,ll>> acc_stu[N+1];
 
-priority_queue<pair<ll,ll>> acc_stu[N+1];
+    public: 
+    void GetStudentList();
+    void GetHospitalList();
+    void GetStudentPref();
+    void GetHospitalPref();
+    void solv();
+};
 
-void solv()
+void GetStudentList()
 {
     string s;
     getline(cin,s);     //@PartitionA; a1, a2, a3;
@@ -26,6 +37,7 @@ void solv()
     s = t;
 
     map<ll,ll> stu;
+    vector<ll> stu_rev_map(1);
     for(ll i=0; i<s.length(); i++)
     {
         ll st = 0;
@@ -63,9 +75,14 @@ void solv()
             }
             n_stu++;
             stu[st] = n_stu;
+            stu_rev_map.push_back(st);
         }
     }
+}
 
+void GetHospital()
+{
+    string s,t;
     getline(cin,s);     //@PartitionB; b1(1), b2(2), b3(1);
     ll n_hos = 0;       //n_hos = Number of hospitals
 
@@ -78,7 +95,7 @@ void solv()
     s = t;
 
     map<ll,ll> hos;
-    vector<ll> hos_cap;
+    vector<ll> hos_cap, hos_rev_map(1);
     hos_cap.push_back(0);
     for(ll i=0; i<s.length(); i++)
     {
@@ -148,280 +165,198 @@ void solv()
             n_hos++;
             hos[ho] = n_hos;
             hos_cap.push_back(cap);
+            hos_rev_map.push_back(ho);
         }
     }
 
-    getline(cin,s);           // @PreferenceListA; a1:b1,b2,b3;
-    t="";
-    for(ll i=0; i<s.length(); i++)      //Removing all spaces
+    for(ll i=1; i<=n_stu; i++)      //Student's preference list of hospitals
     {
-        if(s[i]!=' ')
-            t.push_back(s[i]);
-    }
-    s = t;
-    for(ll i=0; i<n_stu+1; i++) {
-        stu_pref[i].push_back(0);
+        stu_pref[i].push_back(0);       
     }
 
-    for(ll i=0; i<s.length(); i++)
+    for(ll i=0; i<n_stu; i++)
     {
-        ll st = 0;
-        while(i<s.length() && s[i]>='0' && s[i]<='9')
+        getline(cin,s);                     // @PreferenceListA; a1:b1,b2,b3;
+        t="";
+        for(ll i=0; i<s.length(); i++)      //Removing all spaces
         {
-            st = 10*st + s[i]-'0';
-            i++;
+            if(s[i]!=' ')
+                t.push_back(s[i]);
         }
-        if(i==s.length())
+        s = t;
+        
+        ll ii=0, st=0;
+        while(ii<s.length() && s[ii]>='0' && s[ii]<='9')        //Checking if valid student given as input
         {
-            cout<<"Input not complete!\n";
+            st = 10*st + s[ii]-'0';
+            ii++;
+        }
+        if(!stu[st])
+        {
+            cout<<"Invalid student "<<st<<endl;
             return;
         }
-        if(s[i]!=':')
+        if(ii>=s.length()-1 || s[ii]!=':')
         {
-            cout<<"Invalid symbol '"<<s[i]<<"' !!!\n";
+            cout<<"Incomplete preference list!"<<endl;
             return;
         }
-        else if(s[i]==':' && i==s.length()-1)
+
+        ll st_ind = stu[st];
+        for(ll i=ii+1; i<s.length(); i++)
         {
-            cout<<"Not Terminated!\n";
-            return;
-        }
-        else
-        {
-            ll st_ind;
-            if(stu[st])
+            ll ho = 0;
+            while(i<s.length() && s[i]>='0' && s[i]<='9')
             {
-                st_ind = stu[st];
+                ho = 10*ho + s[i]-'0';
+                i++;
             }
-            else
+            if(i==s.length())
+            {
+                cout<<"Input not complete!\n";
+                return;
+            }
+            if(s[i]!=',' && s[i]!=';')
+            {
+                cout<<"Invalid symbol "<<s[i]<<"!\n";
+                return;
+            }
+            if(s[i]==';' && i!=s.length()-1)
+            {
+                cout<<"Terminated too soon!\n";
+                return;
+            }
+            if(s[i]==',' && i>=s.length()-1)
+            {
+                cout<<"Not Terminated!\n";
+                return;
+            }
+            if(!hos[ho])
+            {
+                cout<<"Hospital not found!\n";
+                return;
+            }
+            stu_pref[st_ind].push_back(hos[ho]);
+        }
+    }
+
+    for(ll i=1; i<=n_hos; i++)
+    {
+        getline(cin,s);                     // @PreferenceListA; a1:b1,b2,b3;
+        t="";
+        for(ll i=0; i<s.length(); i++)      //Removing all spaces
+        {
+            if(s[i]!=' ')
+                t.push_back(s[i]);
+        }
+        s = t;
+        
+        ll ii=0, ho=0;
+        while(ii<s.length() && s[ii]>='0' && s[ii]<='9')        //Checking if valid hospital given as input
+        {
+            ho = 10*ho + s[ii]-'0';
+            ii++;
+        }
+        if(!hos[ho])
+        {
+            cout<<"Invalid hospital "<<ho<<endl;
+            return;
+        }
+        if(ii>=s.length()-1 || s[ii]!=':')
+        {
+            cout<<"Incomplete preference list!"<<endl;
+            return;
+        }
+
+        ll ho_ind = hos[ho];
+        ll pref_no = 0;
+        for(ll i=ii+1; i<s.length(); i++)
+        {
+            pref_no++;
+            ll st = 0;
+            while(i<s.length() && s[i]>='0' && s[i]<='9')
+            {
+                st = 10*st + s[i]-'0';
+                i++;
+            }
+            if(i==s.length())
+            {
+                cout<<"Input not complete!\n";
+                return;
+            }
+            if(s[i]!=',' && s[i]!=';')
+            {
+                cout<<"Invalid symbol "<<s[i]<<"!\n";
+                return;
+            }
+            if(s[i]==';' && i!=s.length()-1)
+            {
+                cout<<"Terminated too soon!\n";
+                return;
+            }
+            if(s[i]==',' && i>=s.length()-1)
+            {
+                cout<<"Not Terminated!\n";
+                return;
+            }
+            if(!stu[st])
             {
                 cout<<"Student not found!\n";
                 return;
             }
-            for(ll i=0; i<s.length(); i++)
-            {
-                ll ho = 0;
-                while(i<s.length() && s[i]>='0' && s[i]<='9')
-                {
-                    ho = 10*ho + s[i]-'0';
-                    i++;
-                }
-                if(i==s.length())
-                {
-                    cout<<"Input not complete!\n";
-                    return;
-                }
-                if(s[i]!=',' && s[i]!=';')
-                {
-                    cout<<"Invalid symbol "<<s[i]<<"!\n";
-                    return;
-                }
-                if(s[i]==';' && i!=s.length()-1)
-                {
-                    cout<<"Terminated too soon!\n";
-                    return;
-                }
-                else if(s[i]==',' && i>=s.length()-1)
-                {
-                    cout<<"Not Terminated!\n";
-                    return;
-                }
-                else
-                {
-                    if(hos[ho])
-                    {
-                        stu_pref[st_ind].push_back(hos[ho]);
-                    }
-                    else
-                    {
-                        cout<<"Hospital not found!\n";
-                        return;
-                    }
-                }
-            }
+            // hos_pref[ho_ind].push_back(stu[st]);
+            pos_stu[ho_ind][stu[st]] = pref_no;
         }
     }
 
-    getline(cin,s);           // @PreferenceListB; b1:a1,a2,a3;
-    t="";
-    for(ll i=0; i<s.length(); i++)      //Removing all spaces
-    {
-        if(s[i]!=' ')
-            t.push_back(s[i]);
-    }
-    s = t;
-    for(ll i=0; i<n_hos+1; i++) {
-        hos_pref[i].push_back(0);
-    }
 
-    for(ll i=0; i<s.length(); i++)
+    vector<ll>  preference(n_stu+1,1), cap_rem = hos_cap;   //preference[i] : the current preference the woman i is proposing to
+    ll cnt = 0, tot_pref = 0;    
+    queue<ll> waiting_list;                                  
+    for(ll i = 1; i <= n_stu; i++)
     {
-        ll ho = 0;
-        while(i<s.length() && s[i]>='0' && s[i]<='9')
+        waiting_list.push(i);
+        tot_pref += stu_pref[i].size();
+    }
+    
+    while(!waiting_list.empty())                                      
+    {
+        ll st = waiting_list.front();
+        waiting_list.pop();
+        ll ho = stu_pref[st][preference[st]];
+        if(acc_stu[ho].size() < hos_cap[ho])
         {
-            ho = 10*ho + s[i]-'0';
-            i++;
-        }
-        if(i==s.length())
-        {
-            cout<<"Input not complete!\n";
-            return;
-        }
-        if(s[i]!=':')
-        {
-            cout<<"Invalid symbol "<<s[i]<<"!\n";
-            return;
-        }
-        else if(s[i]==':' && i==s.length()-1)
-        {
-            cout<<"Not Terminated!\n";
-            return;
+            acc_stu[ho].push({pos_stu[ho][st],st});
         }
         else
         {
-            ll ho_ind;
-            if(hos[ho])
-            {
-                ho_ind = hos[ho];
-            }
-            else
-            {
-                cout<<"Student not found!\n";
-                return;
-            }
-            for(ll i=0; i<s.length(); i++)
-            {
-                ll st = 0;
-                while(i<s.length() && s[i]>='0' && s[i]<='9')
-                {
-                    st = 10*st + s[i]-'0';
-                    i++;
-                }
-                if(i==s.length())
-                {
-                    cout<<"Input not complete!\n";
-                    return;
-                }
-                if(s[i]!=',' && s[i]!=';')
-                {
-                    cout<<"Invalid symbol "<<s[i]<<"!\n";
-                    return;
-                }
-                if(s[i]==';' && i!=s.length()-1)
-                {
-                    cout<<"Terminated too soon!\n";
-                    return;
-                }
-                else if(s[i]==',' && i>=s.length()-1)
-                {
-                    cout<<"Not Terminated!\n";
-                    return;
-                }
-                else
-                {
-                    if(stu[st])
-                    {
-                        hos_pref[ho_ind].push_back(stu[st]);
-                    }
-                    else
-                    {
-                        cout<<"Hospital not found!\n";
-                        return;
-                    }
-                }
-            }
+            acc_stu[ho].push({pos_stu[ho][st],st});
+            pair<ll,ll> rej_stu = acc_stu[ho].top();
+            acc_stu[ho].pop();
+            preference[rej_stu.second]++;
+            if(preference[rej_stu.second] < stu_pref[rej_stu.second].size())
+                waiting_list.push(rej_stu.second);
         }
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    ll woman;
-//    ll n = 1;
-//    for(ll i=0; i<n; i++)
-//    {
-//        for(ll j=0; j<n; j++)
-//        {
-//            cin>>woman;
-//            man_pref[i][woman]=j;   //man_pref[i][j] stores the pref_no of the woman j in tyhe i^th man's list
-//        }
-//    }
-//
-//    ll man;
-//    for(ll i=0; i<n; i++)
-//    {
-//        for(ll j=0; j<n; j++)
-//        {
-//            cin>>man;
-//            woman_list[i][j]=man;
-//        }
-//    }
-
-    for(ll i = 1; i <= n_hos; i++) {
-        pos_stu[i].resize(hos_pref[i].size());
-        for(ll j = 1; j < hos_pref[i].size(); j++) {
-            pos_stu[i][hos_pref[i][j]] = j;
-        }
-    }
-
-    vector<bool> rejected(n_stu+1, true);                     //rejected[i] == true if the ith woman does not have any tentative engagement
-    vector<ll>  preference(n_stu+1), cap_rem = hos_cap;
-    ll cnt = 0;                                        //partner[i] : current partner of ith man
-    while(cnt < n_stu)                                      //preference[i] : the current preference the woman i is proposing to
+    for(ll i = 1; i <= n_hos; i++) 
     {
-        for(ll j = 1; j <= n_stu; j++)
+        while(!acc_stu[i].empty()) 
         {
-            if(!rejected[j]) continue;
-            ll hos = stu_pref[j][preference[j]];
-            if(cap_rem[hos])
-            {
-                acc_stu[hos].push({pos_stu[hos][j],j});
-                rejected[j] = false;
-                cap_rem[hos]--;
-            }
-            else
-            {
-                acc_stu[hos].push({pos_stu[hos][j],j});
-                rejected[j] = false;
-                pair<ll,ll> rej_stu = acc_stu[hos].top();
-                acc_stu[hos].pop();
-                rejected[rej_stu.second] = true;
-                preference[rej_stu.second]++;
-            }
-        }
-    }
-
-
-    for(ll i = 1; i <= n_hos; i++) {
-        while(!acc_stu[i].empty()) {
             pair<ll,ll> st = acc_stu[i].top();
             acc_stu[i].pop();
-            final_list[i].push_back(st.second);
+            final_list[i].push_back(stu_rev_map[st.second]);
         }
         final_list[i].push_back(0);
         reverse(final_list[i].begin(), final_list[i].end());
     }
 
-    for(ll i=1; i<=n_hos; i++)
+    for(ll i=1; i <= n_hos; i++)
     {
-        cout << i << ": ";
-        for(ll j = 1; j < final_list[i].size(); j++) {
+        cout << hos_rev_map[i] << ": ";
+        for(ll j = 1; j < final_list[i].size(); j++) 
+        {
             cout << final_list[i][j] << " ";
         }
         cout << endl;
