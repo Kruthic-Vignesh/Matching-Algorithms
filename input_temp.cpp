@@ -55,6 +55,12 @@ void StudentHospital::GetStudentList()
     for(ll i=0; i<s.length(); i++)
     {
         ll st = 0;
+        if(s[i]!='a')
+        {
+            cout << "Student tag -a- missing!\n";
+            return;
+        }
+        i++;
         while(i<s.length() && s[i]>='0' && s[i]<='9')
         {
             st = 10*st + s[i]-'0';
@@ -108,6 +114,12 @@ void StudentHospital::GetHospitalList()
     for(ll i=0; i<s.length(); i++)
     {
         ll ho = 0;
+        if(s[i]!='b')
+        {
+            cout << "Hospital tag -b- missing!\n";
+            return;
+        }
+        i++;
         while(i<s.length() && s[i]>='0' && s[i]<='9')
         {
             ho = 10*ho + s[i]-'0';
@@ -195,6 +207,12 @@ void StudentHospital::GetStudentPref()
         }
         s = t;
         ll ii=0, st=0;
+        if(ii>=s.length() || s[ii]!='a')
+        {
+            cout << "Student tag -a- missing!\n";
+            return;
+        }
+        ii++;
         while(ii<s.length() && s[ii]>='0' && s[ii]<='9')        //Checking if valid student given as input
         {
             st = 10*st + s[ii]-'0';
@@ -214,6 +232,12 @@ void StudentHospital::GetStudentPref()
         for(ll i=ii+1; i<s.length(); i++)
         {
             ll ho = 0;
+            if(i>=s.length() || s[i]!='b')
+            {
+                cout << "Hospital tag -b- missing!\n";
+                return;
+            }
+            i++;
             while(i<s.length() && s[i]>='0' && s[i]<='9')
             {
                 ho = 10*ho + s[i]-'0';
@@ -263,6 +287,12 @@ void StudentHospital::GetHospitalPref()
         }
         s = t;   
         ll ii=0, ho=0;
+        if(ii>=s.length() || s[ii]!='b')
+        {
+            cout << "Hospital tag -b- missing!\n";
+            return;
+        }
+        ii++;
         while(ii<s.length() && s[ii]>='0' && s[ii]<='9')        //Checking if valid hospital given as input
         {
             ho = 10*ho + s[ii]-'0';
@@ -284,6 +314,12 @@ void StudentHospital::GetHospitalPref()
         {
             pref_no++;
             ll st = 0;
+            if(i>=s.length() || s[i]!='a')
+            {
+                cout << "Student tag -a- missing!\n";
+                return;
+            }
+            i++;
             while(i<s.length() && s[i]>='0' && s[i]<='9')
             {
                 st = 10*st + s[i]-'0';
@@ -359,12 +395,13 @@ void StudentHospital::GaleShapleyAlgo()
 
 void StudentHospital::DisplayAllocation()
 {
+    cout << "\nResults:\n";
     for(ll i=1; i <= n_hos; i++)
     {
-        cout << hos_rev_map[i] << ": ";
+        cout << "b" << hos_rev_map[i] << ": ";
         for(ll j = 1; j < final_list[i].size(); j++) 
         {
-            cout << final_list[i][j] << " ";
+            cout << "a" << final_list[i][j] << " ";
         }
         cout << endl;
     }
