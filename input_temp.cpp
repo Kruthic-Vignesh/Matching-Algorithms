@@ -105,7 +105,6 @@ void StudentHospital::GetHospitalList()
             t.push_back(s[i]);
     }
     s = t;
-    hos_cap.push_back(0);
     for(ll i=0; i<s.length(); i++)
     {
         ll ho = 0;
@@ -173,6 +172,7 @@ void StudentHospital::GetHospitalList()
             hos[ho] = n_hos;
             hos_cap.push_back(cap);
             hos_rev_map.push_back(ho);
+            // cout << hos[n_hos] << ' ' << hos_cap[n_hos] << endl;
         }
     }
 }
