@@ -9,25 +9,42 @@ const ll N = 1000;
 class StudentHospital
 {
     ll n_stu, n_hos;
-    vector<vector<ll>> stu_pref(N+1), hos_pref(N+1);
-    vector<vector<ll>> pos_stu(N+1,vector<ll>(N+1,LL_MAX));
-    vector<vector<ll>> final_list(N+1);
+    vector<vector<ll>> stu_pref, hos_pref;
+    vector<vector<ll>> pos_stu;
+    vector<vector<ll>> final_list;
     priority_queue<pair<ll,ll>> acc_stu[N+1];
+    map<ll,ll> stu, hos;
+    vector<ll> hos_cap;
+    vector<ll> stu_rev_map, hos_rev_map;
 
     public: 
+    StudentHospital();
     void GetStudentList();
     void GetHospitalList();
     void GetStudentPref();
     void GetHospitalPref();
+    void GaleShapleyAlgo();
+    void DisplayAllocation();
     void solv();
-};
+}SH;
 
-void GetStudentList()
+StudentHospital::StudentHospital()
+{
+    n_stu = 0, n_hos = 0;
+    stu_pref.assign(N+1, vector<ll>());
+    hos_pref.assign(N+1, vector<ll>());
+    pos_stu.assign(N+1, vector<ll>(N+1,LL_MAX));
+    final_list.assign(N+1,vector<ll>());
+
+    stu_rev_map.push_back(0);
+    hos_rev_map.push_back(0);
+    hos_cap.push_back(0);
+}
+
+void StudentHospital::GetStudentList()
 {
     string s;
     getline(cin,s);     //@PartitionA; a1, a2, a3;
-    ll n_stu=0;         //n_stu = Number of students
-
     string t="";
     for(ll i=0; i<s.length(); i++)      //Removing all spaces
     {
@@ -35,9 +52,6 @@ void GetStudentList()
             t.push_back(s[i]);
     }
     s = t;
-
-    map<ll,ll> stu;
-    vector<ll> stu_rev_map(1);
     for(ll i=0; i<s.length(); i++)
     {
         ll st = 0;
@@ -80,12 +94,10 @@ void GetStudentList()
     }
 }
 
-void GetHospital()
+void StudentHospital::GetHospitalList()
 {
     string s,t;
     getline(cin,s);     //@PartitionB; b1(1), b2(2), b3(1);
-    ll n_hos = 0;       //n_hos = Number of hospitals
-
     t="";
     for(ll i=0; i<s.length(); i++)      //Removing all spaces
     {
@@ -93,9 +105,6 @@ void GetHospital()
             t.push_back(s[i]);
     }
     s = t;
-
-    map<ll,ll> hos;
-    vector<ll> hos_cap, hos_rev_map(1);
     hos_cap.push_back(0);
     for(ll i=0; i<s.length(); i++)
     {
@@ -116,7 +125,6 @@ void GetHospital()
             return;
         }
         i++;
-
         ll cap = 0;
         while(i<s.length() && s[i]>='0' && s[i]<='9')
         {
@@ -134,7 +142,6 @@ void GetHospital()
             return;
         }
         i++;
-
         if(i>=s.length())
         {
             cout<<"Input not complete!\n";
@@ -168,12 +175,15 @@ void GetHospital()
             hos_rev_map.push_back(ho);
         }
     }
+}
 
+void StudentHospital::GetStudentPref()
+{
+    string s,t;
     for(ll i=1; i<=n_stu; i++)      //Student's preference list of hospitals
     {
         stu_pref[i].push_back(0);       
     }
-
     for(ll i=0; i<n_stu; i++)
     {
         getline(cin,s);                     // @PreferenceListA; a1:b1,b2,b3;
@@ -184,7 +194,6 @@ void GetHospital()
                 t.push_back(s[i]);
         }
         s = t;
-        
         ll ii=0, st=0;
         while(ii<s.length() && s[ii]>='0' && s[ii]<='9')        //Checking if valid student given as input
         {
@@ -201,7 +210,6 @@ void GetHospital()
             cout<<"Incomplete preference list!"<<endl;
             return;
         }
-
         ll st_ind = stu[st];
         for(ll i=ii+1; i<s.length(); i++)
         {
@@ -239,7 +247,11 @@ void GetHospital()
             stu_pref[st_ind].push_back(hos[ho]);
         }
     }
+}
 
+void StudentHospital::GetHospitalPref()
+{
+    string s,t;
     for(ll i=1; i<=n_hos; i++)
     {
         getline(cin,s);                     // @PreferenceListA; a1:b1,b2,b3;
@@ -249,8 +261,7 @@ void GetHospital()
             if(s[i]!=' ')
                 t.push_back(s[i]);
         }
-        s = t;
-        
+        s = t;   
         ll ii=0, ho=0;
         while(ii<s.length() && s[ii]>='0' && s[ii]<='9')        //Checking if valid hospital given as input
         {
@@ -267,7 +278,6 @@ void GetHospital()
             cout<<"Incomplete preference list!"<<endl;
             return;
         }
-
         ll ho_ind = hos[ho];
         ll pref_no = 0;
         for(ll i=ii+1; i<s.length(); i++)
@@ -304,30 +314,26 @@ void GetHospital()
                 cout<<"Student not found!\n";
                 return;
             }
-            // hos_pref[ho_ind].push_back(stu[st]);
             pos_stu[ho_ind][stu[st]] = pref_no;
         }
     }
+}
 
-
-    vector<ll>  preference(n_stu+1,1), cap_rem = hos_cap;   //preference[i] : the current preference the woman i is proposing to
-    ll cnt = 0, tot_pref = 0;    
+void StudentHospital::GaleShapleyAlgo()
+{
+    vector<ll>  preference(n_stu+1,1), cap_rem = hos_cap;   //preference[i] : the current preference the woman i is proposing to 
     queue<ll> waiting_list;                                  
     for(ll i = 1; i <= n_stu; i++)
     {
         waiting_list.push(i);
-        tot_pref += stu_pref[i].size();
     }
-    
     while(!waiting_list.empty())                                      
     {
         ll st = waiting_list.front();
         waiting_list.pop();
         ll ho = stu_pref[st][preference[st]];
-        if(acc_stu[ho].size() < hos_cap[ho])
-        {
+        if(acc_stu[ho].size() < hos_cap[ho])        
             acc_stu[ho].push({pos_stu[ho][st],st});
-        }
         else
         {
             acc_stu[ho].push({pos_stu[ho][st],st});
@@ -338,8 +344,6 @@ void GetHospital()
                 waiting_list.push(rej_stu.second);
         }
     }
-
-
     for(ll i = 1; i <= n_hos; i++) 
     {
         while(!acc_stu[i].empty()) 
@@ -351,7 +355,10 @@ void GetHospital()
         final_list[i].push_back(0);
         reverse(final_list[i].begin(), final_list[i].end());
     }
+}
 
+void StudentHospital::DisplayAllocation()
+{
     for(ll i=1; i <= n_hos; i++)
     {
         cout << hos_rev_map[i] << ": ";
@@ -364,13 +371,19 @@ void GetHospital()
     return;
 }
 
+void StudentHospital::solv()
+{
+    GetStudentList();
+    GetHospitalList();
+    GetStudentPref();
+    GetHospitalPref();
+    GaleShapleyAlgo();
+    DisplayAllocation();
+    return;
+}
+
 int main()
 {
-    ll test_cases=1;
-//    cin>>test_cases;
-    for(ll curr_case=1;curr_case<=test_cases;curr_case++)
-    {
-        solv();
-    }
+    SH.solv();
     return 0;
 }
