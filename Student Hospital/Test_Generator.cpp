@@ -89,7 +89,7 @@ void solv(ll tc)
         random_shuffle(stu_list.begin(),stu_list.end());
         for(int j=0; j<n; j++)
         {
-            cout<<"b"<<stu_list[j];
+            cout<<"a"<<stu_list[j];
             if(j==n-1)
                 cout<<";\n";
             else
