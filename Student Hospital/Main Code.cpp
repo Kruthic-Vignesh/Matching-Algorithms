@@ -28,7 +28,7 @@ class StudentHospital
     void DisplayAllocation();
     void DisplayAllocationStu();
     void solv();
-}SH[10];
+}SH;
 
 StudentHospital::StudentHospital()
 {
@@ -343,7 +343,7 @@ void StudentHospital::GetHospitalPref()
         cout << "Invalid Partition Name!\n";
         return;
     }
-    for(ll i=1; i<=n_hos; i++)
+    for(ll j=1; j<=n_hos; j++)
     {
         getline(cin,s);                     // @PreferenceListA; a1:b1,b2,b3;
         t="";
@@ -381,6 +381,9 @@ void StudentHospital::GetHospitalPref()
         {
             pref_no++;
             ll st = 0;
+            if(i+1==s.length() && s[i]==';')
+                break;
+
             if(i>=s.length() || s[i]!='a')
             {
                 cout << "Student tag waw missing!\n";
@@ -471,6 +474,7 @@ void StudentHospital::GaleShapleyAlgo()
         {
             pair<ll,ll> st = acc_stu[i].top();
             acc_stu[i].pop();
+            allocation[st.second] = i;
             final_list[i].push_back(stu_rev_map[st.second]);
         }
         final_list[i].push_back(0);
@@ -480,7 +484,16 @@ void StudentHospital::GaleShapleyAlgo()
 
 void StudentHospital::DisplayAllocation()
 {
-    cout << "\nResults:\n";
+    for(ll i=1; i <= n_stu; i++)
+    {
+         if(allocation[i] == -1)     continue;
+
+        cout << "a" << stu_rev_map[i] << ",";
+        cout << "b" << hos_rev_map[allocation[i]] << ",";
+        cout << pos_hos[i][allocation[i]] << endl;
+    }
+    return;
+
     for(ll i=1; i <= n_hos; i++)
     {
         cout << "b" << hos_rev_map[i] << ": ";
