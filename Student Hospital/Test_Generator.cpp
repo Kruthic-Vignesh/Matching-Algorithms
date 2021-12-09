@@ -31,31 +31,36 @@ ofstream outputFile[10];
 void solv(ll tc)
 {
     //Student List
+    cout << "@PartitionA\n";
     ll n_stu = glr(500,1000);
     for(int i=0; i<n_stu; i++)
     {
         cout<<"a"<<i+1;
         if(i==n_stu-1)
-            cout<<";\n";
+            cout<<" ;\n";
         else
             cout<<", ";
     }
+    cout << "@End\n\n";
 
     //Hospitals & its capacity
+    cout << "@PartitionB\n";
     vector<ll> hos_cap;
     ll n_hos = glr(200,400);
     for(int i=0; i<n_hos; i++)
     {
         cout<<"b"<<i+1;
         hos_cap.push_back(glr(1,5));
-        cout<<"("<<hos_cap[hos_cap.size()-1]<<")";
+        cout<<" ("<<hos_cap[hos_cap.size()-1]<<")";
         if(i==n_hos-1)
-            cout<<";\n";
+            cout<<" ;\n";
         else
             cout<<", ";
     }
+    cout << "@End\n\n";
 
     //Student preference lists
+    cout << "@PreferenceListsA\n";
     vector<ll> hos_list;
     for(int j=0; j<n_hos; j++)
     {
@@ -75,8 +80,10 @@ void solv(ll tc)
                 cout<<", ";
         }
     }
+    cout << "@End\n\n";
 
     //Hospital preference lists
+    cout << "@PreferenceListsB\n";
     vector<ll> stu_list;
     for(int j=0; j<n_stu; j++)
     {
@@ -96,7 +103,8 @@ void solv(ll tc)
                 cout<<", ";
         }
     }
-    
+    cout << "@End\n";
+
 }
 
 int32_t main()
