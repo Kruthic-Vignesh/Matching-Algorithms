@@ -66,6 +66,7 @@ void solv(ll tc)
     {
         hos_list.push_back(j+1);
     }
+    vector<ll> h_a[1001];
     for(int i=0; i<n_stu; i++)
     {
         cout<<"a"<<i+1<<": ";
@@ -73,6 +74,7 @@ void solv(ll tc)
         random_shuffle(hos_list.begin(),hos_list.end());
         for(int j=0; j<n; j++)
         {
+            h_a[hos_list[j]].push_back(i+1);
             cout<<"b"<<hos_list[j];
             if(j==n-1)
                 cout<<";\n";
@@ -85,26 +87,24 @@ void solv(ll tc)
     //Hospital preference lists
     cout << "@PreferenceListsB\n";
     vector<ll> stu_list;
-    for(int j=0; j<n_stu; j++)
+    /*for(int j=0; j<n_stu; j++)
     {
         stu_list.push_back(j+1);
-    }
+    }*/
     for(int i=0; i<n_hos; i++)
     {
         cout<<"b"<<i+1<<": ";
-        int n = glr(hos_cap[i],n_stu);
-        random_shuffle(stu_list.begin(),stu_list.end());
-        for(int j=0; j<n; j++)
+        // int n = glr(hos_cap[i],n_stu);
+        random_shuffle(h_a[i].begin(), h_a[i].end());
+        for(int j=0; j<h_a[i].size(); j++)
         {
-            cout<<"a"<<stu_list[j];
-            if(j==n-1)
-                cout<<";\n";
-            else
+            cout<<"a"<<h_a[i][j];    
+            if(j != h_a[i].size()-1)
                 cout<<", ";
         }
+        cout<<";\n";
     }
     cout << "@End\n";
-
 }
 
 int32_t main()
