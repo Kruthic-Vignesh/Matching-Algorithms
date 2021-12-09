@@ -10,12 +10,13 @@ class StudentHospital
 {
     ll n_stu, n_hos;
     vector<vector<ll>> stu_pref, hos_pref;
-    vector<vector<ll>> pos_stu;
+    vector<vector<ll>> pos_stu, pos_hos;
     vector<vector<ll>> final_list;
     priority_queue<pair<ll,ll>> acc_stu[N+1];
     map<ll,ll> stu, hos;
     vector<ll> hos_cap;
     vector<ll> stu_rev_map, hos_rev_map;
+    vector<ll> allocation;
 
     public: 
     StudentHospital();
@@ -25,6 +26,7 @@ class StudentHospital
     void GetHospitalPref();
     void GaleShapleyAlgo();
     void DisplayAllocation();
+    void DisplayAllocationStu();
     void solv();
 }SH[10];
 
@@ -34,7 +36,9 @@ StudentHospital::StudentHospital()
     stu_pref.assign(N+1, vector<ll>());
     hos_pref.assign(N+1, vector<ll>());
     pos_stu.assign(N+1, vector<ll>(N+1,LL_MAX));
+    pos_hos.assign(N+1, vector<ll>(N+1,LL_MAX));
     final_list.assign(N+1,vector<ll>());
+    allocation.assign(N+1,-1);
 
     stu_rev_map.push_back(0);
     hos_rev_map.push_back(0);
@@ -44,7 +48,13 @@ StudentHospital::StudentHospital()
 void StudentHospital::GetStudentList()
 {
     string s;
-    getline(cin,s);     //@PartitionA; a1, a2, a3;
+    getline(cin,s);     //@PartitionA
+    if(s != "@PartitionA")
+    {
+        cout << "Invalid Partition Name!\n";
+        return;
+    }
+    getline(cin,s);     //a1, a2, a3, a4;
     string t="";
     for(ll i=0; i<s.length(); i++)      //Removing all spaces
     {
@@ -57,7 +67,7 @@ void StudentHospital::GetStudentList()
         ll st = 0;
         if(s[i]!='a')
         {
-            cout << "Student tag !a! missing!\n";
+            cout << "Student tag -a- missing!\n";
             return;
         }
         i++;
@@ -98,12 +108,30 @@ void StudentHospital::GetStudentList()
             stu_rev_map.push_back(st);
         }
     }
+    getline(cin,s);
+    if(s != "@End")
+    {
+        cout << "Student List not ended!\n";
+        return;
+    }
 }
 
 void StudentHospital::GetHospitalList()
 {
     string s,t;
-    getline(cin,s);     //@PartitionB; b1(1), b2(2), b3(1);
+    getline(cin,s);     //empty line
+    if(s != "")
+    {
+        cout << "Spacing missing mamaaa!\n";
+        return;
+    }
+    getline(cin,s);     //@PartitionB
+    if(s != "@PartitionB")
+    {
+        cout << "Invalid Partition Name!\n";
+        return;
+    }
+    getline(cin,s);                     //b1(1), b2(2), b3(1);
     t="";
     for(ll i=0; i<s.length(); i++)      //Removing all spaces
     {
@@ -116,7 +144,7 @@ void StudentHospital::GetHospitalList()
         ll ho = 0;
         if(s[i]!='b')
         {
-            cout << "Hospital tag !b! missing!\n";
+            cout << "Hospital tag -b- missing!\n";
             return;
         }
         i++;
@@ -187,11 +215,29 @@ void StudentHospital::GetHospitalList()
             // cout << hos[n_hos] << ' ' << hos_cap[n_hos] << endl;
         }
     }
+    getline(cin,s);
+    if(s != "@End")
+    {
+        cout << "Student List not ended!\n";
+        return;
+    }
 }
 
 void StudentHospital::GetStudentPref()
 {
     string s,t;
+    getline(cin,s);     //empty line
+    if(s != "")
+    {
+        cout << "Spacing missing oyaa!\n";
+        return;
+    }
+    getline(cin,s);     //@PartitionB
+    if(s != "@PreferenceListsA")
+    {
+        cout << "Invalid Partition Name!\n";
+        return;
+    }
     for(ll i=1; i<=n_stu; i++)      //Student's preference list of hospitals
     {
         stu_pref[i].push_back(0);       
@@ -209,7 +255,7 @@ void StudentHospital::GetStudentPref()
         ll ii=0, st=0;
         if(ii>=s.length() || s[ii]!='a')
         {
-            cout << "Student tag --a-- missing!\n";
+            cout << "Student tag -a- missing!\n";
             return;
         }
         ii++;
@@ -229,12 +275,14 @@ void StudentHospital::GetStudentPref()
             return;
         }
         ll st_ind = stu[st];
+        ll pref_no = 0;
         for(ll i=ii+1; i<s.length(); i++)
         {
             ll ho = 0;
+            pref_no++;
             if(i>=s.length() || s[i]!='b')
             {
-                cout << "Hospital tag --b-- missing!\n";
+                cout << "Hospital tag -b- missing!\n";
                 return;
             }
             i++;
@@ -269,13 +317,32 @@ void StudentHospital::GetStudentPref()
                 return;
             }
             stu_pref[st_ind].push_back(hos[ho]);
+            pos_hos[st_ind][hos[ho]] = pref_no;
         }
+    }
+    getline(cin,s);
+    if(s != "@End")
+    {
+        cout << "Student List not ended!\n";
+        return;
     }
 }
 
 void StudentHospital::GetHospitalPref()
 {
     string s,t;
+    getline(cin,s);     //empty line
+    if(s != "")
+    {
+        cout << "Spacing missing naaye!\n";
+        return;
+    }
+    getline(cin,s);     //@PartitionB
+    if(s != "@PreferenceListsB")
+    {
+        cout << "Invalid Partition Name!\n";
+        return;
+    }
     for(ll i=1; i<=n_hos; i++)
     {
         getline(cin,s);                     // @PreferenceListA; a1:b1,b2,b3;
@@ -316,7 +383,7 @@ void StudentHospital::GetHospitalPref()
             ll st = 0;
             if(i>=s.length() || s[i]!='a')
             {
-                cout << "Student tag -a- missing!\n";
+                cout << "Student tag waw missing!\n";
                 return;
             }
             i++;
@@ -353,6 +420,12 @@ void StudentHospital::GetHospitalPref()
             pos_stu[ho_ind][stu[st]] = pref_no;
         }
     }
+    getline(cin,s);
+    if(s != "@End")
+    {
+        cout << "Student List not ended!\n";
+        return;
+    }
 }
 
 void StudentHospital::GaleShapleyAlgo()
@@ -367,7 +440,18 @@ void StudentHospital::GaleShapleyAlgo()
     {
         ll st = waiting_list.front();
         waiting_list.pop();
+
+        if(preference[st] >= stu_pref[st].size())
+            continue;
+
         ll ho = stu_pref[st][preference[st]];
+        if(pos_stu[ho][st] == LL_MAX)
+        {
+            preference[st]++;
+            waiting_list.push(st);
+            continue;
+        }
+
         if(acc_stu[ho].size() < hos_cap[ho])        
             acc_stu[ho].push({pos_stu[ho][st],st});
         else
@@ -380,6 +464,7 @@ void StudentHospital::GaleShapleyAlgo()
                 waiting_list.push(rej_stu.second);
         }
     }
+    
     for(ll i = 1; i <= n_hos; i++) 
     {
         while(!acc_stu[i].empty()) 
