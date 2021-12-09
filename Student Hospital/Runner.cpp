@@ -343,7 +343,7 @@ void StudentHospital::GetHospitalPref()
         cout << "Invalid Partition Name!\n";
         return;
     }
-    for(ll i=1; i<=n_hos; i++)
+    for(ll j=1; j<=n_hos; j++)
     {
         getline(cin,s);                     // @PreferenceListA; a1:b1,b2,b3;
         t="";
@@ -381,6 +381,9 @@ void StudentHospital::GetHospitalPref()
         {
             pref_no++;
             ll st = 0;
+            if(i+1==s.length() && s[i]==';')
+                break;
+
             if(i>=s.length() || s[i]!='a')
             {
                 cout << "Student tag waw missing!\n";
@@ -471,6 +474,7 @@ void StudentHospital::GaleShapleyAlgo()
         {
             pair<ll,ll> st = acc_stu[i].top();
             acc_stu[i].pop();
+            allocation[st.second] = i;
             final_list[i].push_back(stu_rev_map[st.second]);
         }
         final_list[i].push_back(0);
@@ -480,7 +484,16 @@ void StudentHospital::GaleShapleyAlgo()
 
 void StudentHospital::DisplayAllocation()
 {
-    cout << "\nResults:\n";
+    for(ll i=1; i <= n_stu; i++)
+    {
+         if(allocation[i] == -1)     continue;
+
+        cout << "a" << stu_rev_map[i] << ",";
+        cout << "b" << hos_rev_map[allocation[i]] << ",";
+        cout << pos_hos[i][allocation[i]] << endl;
+    }
+    return;
+
     for(ll i=1; i <= n_hos; i++)
     {
         cout << "b" << hos_rev_map[i] << ": ";
@@ -506,10 +519,10 @@ void StudentHospital::solv()
 
 int main()
 {
-    string file[10] = {"TC11.txt", "TC12.txt", "TC13.txt", "TC14.txt", "TC15.txt", "TC16.txt", "TC17.txt", "TC18.txt", "TC19.txt", "TC20.txt"};
-    string op[10] = {"O11.txt", "O12.txt", "O13.txt", "O14.txt", "O15.txt", "O16.txt", "O17.txt", "O18.txt", "O19.txt", "O20.txt"};
+    string file[11] = {"TC0.txt", "TC1.txt", "TC2.txt", "TC3.txt", "TC4.txt", "TC5.txt", "TC6.txt", "TC7.txt", "TC8.txt", "TC9.txt", "TC10.txt"};
+    string op[11] = {"P0.txt","P1.txt", "P2.txt", "P3.txt", "P4.txt", "P5.txt", "P6.txt", "P7.txt", "P8.txt", "P9.txt", "P10.txt"};
 
-    for(int i=0; i<10; i++)
+    for(int i=0; i<1; i++)
     {
         freopen(op[i].c_str(),"w", stdout);
         freopen(file[i].c_str(),"r", stdin);
