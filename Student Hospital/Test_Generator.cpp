@@ -7,6 +7,15 @@ using namespace std;
 typedef long long ll;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
 
+const ll STU_LOWER_LIMIT = 500;
+const ll STU_UPPER_LIMIT = 1000;
+
+const ll HOS_LOWER_LIMIT = 500;
+const ll HOS_UPPER_LIMIT = 1000;
+
+const ll HOS_UPPER_QUOTA_L = 1;
+const ll HOS_UPPER_QUOTA_U = 25;
+
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 int gr(int r)
@@ -30,11 +39,11 @@ void solv(ll tc)
 {
     //Student List
     cout << "@PartitionA\n";
-    ll n_stu = glr(500,1000);
-    for(int i=0; i<n_stu; i++)
+    ll n_stu = glr(STU_LOWER_LIMIT,STU_UPPER_LIMIT);
+    for(int i=1; i<=n_stu; i++)
     {
-        cout<<"a"<<i+1;
-        if(i==n_stu-1)
+        cout<<"a"<<i;
+        if(i==n_stu)
             cout<<" ;\n";
         else
             cout<<", ";
@@ -44,13 +53,13 @@ void solv(ll tc)
     //Hospitals & its capacity
     cout << "@PartitionB\n";
     vector<ll> hos_cap;
-    ll n_hos = glr(200,400);
-    for(int i=0; i<n_hos; i++)
+    ll n_hos = glr(HOS_LOWER_LIMIT,HOS_UPPER_LIMIT);
+    for(int i=1; i<=n_hos; i++)
     {
-        cout<<"b"<<i+1;
-        hos_cap.push_back(glr(1,5));
-        cout<<" ("<<hos_cap[hos_cap.size()-1]<<")";
-        if(i==n_hos-1)
+        cout<<"b"<<i;
+        hos_cap.push_back(glr(HOS_UPPER_QUOTA_L,HOS_UPPER_QUOTA_U));
+        cout<<" ("<<hos_cap.back()<<")";
+        if(i==n_hos)
             cout<<" ;\n";
         else
             cout<<", ";
@@ -60,19 +69,20 @@ void solv(ll tc)
     //Student preference lists
     cout << "@PreferenceListsA\n";
     vector<ll> hos_list;
-    for(int j=0; j<n_hos; j++)
+    for(int j=1; j<=n_hos; j++)
     {
-        hos_list.push_back(j+1);
+        hos_list.push_back(j);
     }
-    vector<ll> h_a[1001];
-    for(int i=0; i<n_stu; i++)
+
+    vector<ll> h_a[n_hos+1];
+    for(int i=1; i<=n_stu; i++)
     {
-        cout<<"a"<<i+1<<": ";
+        cout<<"a"<<i<<": ";
         int n = glr(1,n_hos);
         random_shuffle(hos_list.begin(),hos_list.end());
         for(int j=0; j<n; j++)
         {
-            h_a[hos_list[j]].push_back(i+1);
+            h_a[hos_list[j]].push_back(i);
             cout<<"b"<<hos_list[j];
             if(j==n-1)
                 cout<<";\n";
@@ -85,14 +95,9 @@ void solv(ll tc)
     //Hospital preference lists
     cout << "@PreferenceListsB\n";
     vector<ll> stu_list;
-    /*for(int j=0; j<n_stu; j++)
+    for(int i=1; i<=n_hos; i++)
     {
-        stu_list.push_back(j+1);
-    }*/
-    for(int i=0; i<n_hos; i++)
-    {
-        cout<<"b"<<i+1<<": ";
-        // int n = glr(hos_cap[i],n_stu);
+        cout<<"b"<<i<<": ";
         random_shuffle(h_a[i].begin(), h_a[i].end());
         for(int j=0; j<h_a[i].size(); j++)
         {
