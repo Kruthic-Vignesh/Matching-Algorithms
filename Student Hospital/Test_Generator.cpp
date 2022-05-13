@@ -7,14 +7,17 @@ using namespace std;
 typedef long long ll;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
 
-const ll STU_LOWER_LIMIT = 500;
-const ll STU_UPPER_LIMIT = 1000;
+const ll STU_LOWER_LIMIT = 5;
+const ll STU_UPPER_LIMIT = 10;
 
-const ll HOS_LOWER_LIMIT = 500;
-const ll HOS_UPPER_LIMIT = 1000;
+const ll HOS_LOWER_LIMIT = 5;
+const ll HOS_UPPER_LIMIT = 10;
+
+const ll HOS_LOWER_QUOTA_L = 1;
+const ll HOS_LOWER_QUOTA_U = 1;
 
 const ll HOS_UPPER_QUOTA_L = 1;
-const ll HOS_UPPER_QUOTA_U = 25;
+const ll HOS_UPPER_QUOTA_U = 1;
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
@@ -57,8 +60,10 @@ void solv(ll tc)
     for (int i = 1; i <= n_hos; i++)
     {
         cout << "b" << i;
-        hos_cap.push_back(glr(HOS_UPPER_QUOTA_L, HOS_UPPER_QUOTA_U));
-        cout << " (" << hos_cap.back() << ")";
+        ll n_lq = glr(HOS_LOWER_QUOTA_L, HOS_LOWER_QUOTA_U);
+        ll n_hq = glr(n_lq, HOS_UPPER_QUOTA_U);
+        hos_cap.push_back(n_hq);
+        // cout << " (" << n_lq << ", " << n_hq << ")";
         if (i == n_hos)
             cout << " ;\n";
         else
@@ -112,9 +117,9 @@ void solv(ll tc)
 
 int32_t main()
 {
-    string file[10] = {"TC1.txt", "TC2.txt", "TC3.txt", "TC4.txt", "TC5.txt", "TC6.txt", "TC7.txt", "TC8.txt", "TC9.txt", "TC10.txt"};
+    string file[10] = {"./TestCases/TC1.txt", "./TestCases/TC2.txt", "./TestCases/TC3.txt", "./TestCases/TC4.txt", "./TestCases/TChqlqK5.txt", "./TestCases/TChqlqK6.txt", "./TestCases/TChqlqK7.txt", "./TestCases/TChqlqK8.txt", "./TestCases/TChqlqK9.txt", "./TestCases/TChqlqK10.txt"};
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 4; i++)
         outputFile[i].open(file[i].c_str());
 
     for (int tc = 0; tc < 10; tc++)
