@@ -519,10 +519,10 @@ void StudentHospital::solv()
 
 int main()
 {
-    string file[11] = {"TC0.txt", "TC1.txt", "TC2.txt", "TC3.txt", "TC4.txt", "TC5.txt", "TC6.txt", "TC7.txt", "TC8.txt", "TC9.txt", "TC10.txt"};
-    string op[11] = {"P0.txt","P1.txt", "P2.txt", "P3.txt", "P4.txt", "P5.txt", "P6.txt", "P7.txt", "P8.txt", "P9.txt", "P10.txt"};
+    string file[11] = {"TC1.txt", "TC2.txt", "TC3.txt", "TC4.txt", "TC5.txt", "TC6.txt", "TC7.txt", "TC8.txt", "TC9.txt", "TC10.txt"};
+    string op[11] = {"P1.txt", "P2.txt", "P3.txt", "P4.txt", "P5.txt", "P6.txt", "P7.txt", "P8.txt", "P9.txt", "P10.txt"};
 
-    for(int i=0; i<1; i++)
+    for(int i=0; i<9; i++)
     {
         freopen(op[i].c_str(),"w", stdout);
         freopen(file[i].c_str(),"r", stdin);

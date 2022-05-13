@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
     string s1 = "P", s2 = "comp", s3 = ".txt", s10, s11;
-    for(int i = 1; i <= 9; i++)
+    for(int i = 1; i <= 1; i++)
     {
         ifstream f1;
         char x = '0'+i;
@@ -30,10 +30,12 @@ int main()
                 cout<<"diff"<<endl;
                 return 0;
             }
-            for(int i = 0; i < s10.size(); i++)
+            for(int j = 0; j < s10.size(); j++)
             {
-                if(s10[i] != s11[i])
+                if(s10[j] != s11[j])
                 {
+                    cout << "Error in file "<<i<<endl;
+                    cout<<s10<<" "<<s11<<endl;
                     cout<<"Diff"<<endl;
                     return 0;
                 }

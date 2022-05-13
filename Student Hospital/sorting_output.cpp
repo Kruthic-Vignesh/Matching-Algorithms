@@ -33,7 +33,7 @@ int main()
 {
     string file[10] = {"output (1).txt", "output (2).txt", "output (3).txt", "output (4).txt", "output (5).txt", "output (6).txt", "output (7).txt", "output (8).txt", "output (9).txt", "output (1)0.txt"};
     string op[10] = {"comp1.txt", "comp2.txt", "comp3.txt", "comp4.txt", "comp5.txt", "comp6.txt", "comp7.txt", "comp8.txt", "comp9.txt", "comp10.txt"};
-    for(int i=0; i<10; i++)
+    for(int i=0; i<1; i++)
     {
         freopen(op[i].c_str(),"w", stdout);
         freopen(file[i].c_str(),"r", stdin);
