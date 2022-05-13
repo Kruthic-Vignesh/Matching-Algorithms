@@ -334,11 +334,6 @@ void StudentHospital::GetStudentPref()
         cout << "Student List not ended!\n";
         return;
     }
-
-    for(int i=1; i<=n_stu; i++)
-    {
-        stu_pref[st_ind].push_back();
-    }
 }
 
 void StudentHospital::GetHospitalPref()
