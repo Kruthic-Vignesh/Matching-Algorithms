@@ -519,10 +519,10 @@ void StudentHospital::solv()
 
 int main()
 {
-    string file[11] = {"TC1.txt", "TC2.txt", "TC3.txt", "TC4.txt", "TC5.txt", "TC6.txt", "TC7.txt", "TC8.txt", "TC9.txt", "TC10.txt"};
-    string op[11] = {"P1.txt", "P2.txt", "P3.txt", "P4.txt", "P5.txt", "P6.txt", "P7.txt", "P8.txt", "P9.txt", "P10.txt"};
+    string file[16] = {"./TestCases/TC1.txt", "./TestCases/TC2.txt", "./TestCases/TC3.txt", "./TestCases/TC4.txt", "./TestCases/TCK1.txt", "./TestCases/TCK2.txt", "./TestCases/TCK3.txt", "./TestCases/TCK4.txt", "./TestCases/TChqlq1.txt", "./TestCases/TChqlq2.txt", "./TestCases/TChqlq3.txt", "./TestCases/TChqlq4.txt", "./TestCases/TChqlqK1.txt", "./TestCases/TChqlqK2.txt", "./TestCases/TChqlqK3.txt", "./TestCases/TChqlqK4.txt"};
+    string op[16] = {"./Output/Out1.txt", "./Output/Out2.txt", "./Output/Out3.txt", "./Output/Out4.txt", "./Output/OutK1.txt", "./Output/OutK2.txt", "./Output/OutK3.txt", "./Output/OutK4.txt", "./Output/Outhqlq1.txt", "./Output/Outhqlq2.txt", "./Output/Outhqlq3.txt", "./Output/Outhqlq4.txt", "./Output/OuthqlqK1.txt", "./Output/OuthqlqK2.txt", "./Output/OuthqlqK3.txt", "./Output/OuthqlqK4.txt"};
 
-    for(int i=0; i<9; i++)
+    for(int i=0; i<16; i++)
     {
         freopen(op[i].c_str(),"w", stdout);
         freopen(file[i].c_str(),"r", stdin);
